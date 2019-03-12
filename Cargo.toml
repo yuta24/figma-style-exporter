@@ -5,3 +5,7 @@ authors = ["Yu Tawata <tawata-yu@dmm.com>"]
 edition = "2018"
 
 [dependencies]
+reqwest = "0.9.11"
+serde = { version = "1.0.89", features = ["derive"] }
+serde_json = "1.0.39"
+itertools = "0.8.0"
