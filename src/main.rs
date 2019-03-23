@@ -1,87 +1,70 @@
-extern crate reqwest;
-extern crate serde;
-extern crate serde_json;
-extern crate itertools;
+mod figma;
 
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::env;
 use std::process;
-use serde::Deserialize;
-use serde_json::{Result, Value};
+
+use env_logger;
+use log::info;
+
+const TEAM_ID_KEY: &str = "FIGMA_TEAM_ID";
+const ACCESS_TOKEN_KEY: &str = "FIGMA_ACCESS_TOKEN";
 
 fn main() {
-    let base_url = "https://api.figma.com";
-    let team_id_key = "FIGMA_TEAM_ID";
-    let access_token_key = "FIGMA_ACCESS_TOKEN";
+    env::set_var("RUST_LOG", "info");
+    env_logger::init();
 
-    let access_token = match env::var(access_token_key) {
+    let access_token = match env::var(ACCESS_TOKEN_KEY) {
         Ok(val) => val,
         Err(err) => {
-            println!("{}: {}", err, access_token_key);
-            process::exit(1);
-        },
-    };
-    let team_id = match env::var(team_id_key) {
-        Ok(val) => val,
-        Err(err) => {
-            println!("{}: {}", err, team_id_key);
+            println!("{}: {}", err, ACCESS_TOKEN_KEY);
             process::exit(1);
         },
     };
 
-    // println!("{}", access_token);
+    let client = figma::Client::new(access_token);
 
-    // curl -H 'X-FIGMA-TOKEN: 9444-51cbb2a1-82d0-44e6-9e6e-40b0d4116c28' 'https://api.figma.com/v1/files/VrHGUOb752d69dFaIIEOC99x'
+    let team_id = match env::var(TEAM_ID_KEY) {
+        Ok(val) => val,
+        Err(err) => {
+            println!("{}: {}", err, TEAM_ID_KEY);
+            process::exit(1);
+        },
+    };
 
-    let client = reqwest::Client::new();
-    let url = format!("{}/v1/teams/{}/styles", base_url, team_id);
-    let result = client.get(&url).header("X-FIGMA-TOKEN", access_token.clone()).send();
+    let styles = client.get_styles(&team_id);
 
-    match result {
-        Ok(mut res) => {
-            {
-                let text = res.text().unwrap();
-                let json: Value = serde_json::from_str(&text).unwrap();
-                // println!("{}", json["meta"]["styles"]);
-                let styles = json["meta"]["styles"].clone();
-                let styles: Vec<Style> = serde_json::from_value(styles).unwrap();
+    let file_nodes = styles.map( |styles| {
+        let file_keys = styles.iter().map(|style| {
+            return style.file_key.clone();
+        });
+        let file_keys: HashSet<String> = file_keys.into_iter().collect();
+        let mut file_nodes = HashMap::new();
+        for file_key in file_keys {
+        let file_styles: Vec<String> = styles.clone().into_iter().filter(|style| style.file_key == *file_key).map(|style| style.node_id).collect();
+            file_nodes.insert(file_key, file_styles);
+        }
+        return file_nodes;
+    });
 
-                let mut file_keys = Vec::new();
-                file_keys.extend(styles.clone().into_iter().map(|style| {
-                    return style.file_key.clone();
-                }));
-                let file_keys: HashSet<String> = file_keys.into_iter().collect();
-                // println!("{:#?}", file_keys);
-                let mut file_nodes = HashMap::new();
-                for file_key in file_keys {
-                    let file_styles: Vec<String> = styles.clone().into_iter().filter(|style| style.file_key == *file_key).map(|style| style.node_id).collect();
-                    file_nodes.insert(file_key, file_styles);
-                }
-                // println!("{:#?}", file_nodes);
+    info!("{:#?}", file_nodes);
 
-                for file_node in file_nodes {
-                    let url = format!("{}/v1/files/{}/nodes", base_url, file_node.0);
-                    let query = [("ids", file_node.1.join(","))];
-                    // println!("{:#?}", query);
-                    // println!("{:#?}", client.get(&url).query(&query).header("X-FIGMA-TOKEN", access_token.clone()));
-                    let result = client.get(&url).query(&query).header("X-FIGMA-TOKEN", access_token.clone()).send();
-
-                    match result {
-                        Ok(mut res) => {
-                            let text = res.text().unwrap();
-                            let json: Value = serde_json::from_str(&text).unwrap();
-                            println!("{}", json);
-                        },
-                        Err(err) => {
-                            println!("{}", err);
-                        },
-                    };
-                }
+    match file_nodes {
+        Ok(res) => {
+            for (file_key, file_node_ids) in res.iter() {
+                match client.get_file_nodes(&file_key, &file_node_ids) {
+                    Ok(res) => {
+                        info!("{:#?}", res);
+                    },
+                    Err(err) => {
+                        info!("{:#?}", err);
+                    },
+                };
             }
         },
         Err(err) => {
-            println!("{}", err)
+            info!("{:#?}", err);
         },
     };
 }
