@@ -10,45 +10,6 @@ use std::process;
 use serde::Deserialize;
 use serde_json::{Result, Value};
 
-#[derive(Clone, Deserialize, Debug)]
-enum StyleType {
-    FILL,
-    TEXT,
-    EFFECT,
-    GRID
-}
-
-#[derive(Clone, Deserialize, Debug)]
-struct Style {
-    // keyString
-    // The unique identifier of the style
-    key: String,
-    // file_keyString
-    // The unique identifier of the file which contains the style
-    file_key: String,
-    // node_idString
-    // Id of the style node within the figma file
-    node_id: String,
-    // style_typeStyleType
-    // The type of style
-    style_type: StyleType,
-    // thumbnail_urlString
-    // URL link to the style's thumbnail image
-    thumbnail_url: String,
-    // nameString
-    // Name of the style
-    name: String,
-    // descriptionString
-    // The description of the style as entered by the publisher
-    description: String,
-    // created_atString
-    // The UTC ISO 8601 time at which the style was created
-    created_at: String,
-    // updated_atString
-    updated_at: String
-    // The UTC ISO 8601 time at which the style was updated
-}
-
 fn main() {
     let base_url = "https://api.figma.com";
     let team_id_key = "FIGMA_TEAM_ID";
