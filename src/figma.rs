@@ -1,14 +1,11 @@
 use reqwest;
 use serde;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use serde_json::Value;
-
-use env_logger;
-use log::info;
 
 const BASE_URL: &str = "https://api.figma.com";
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub enum StyleType {
     FILL,
     TEXT,
@@ -16,7 +13,7 @@ pub enum StyleType {
     GRID,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Style {
     pub key: String,
     pub file_key: String,
@@ -31,7 +28,7 @@ pub struct Style {
     pub sort_position: String,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Color {
     pub r: f64,
     pub g: f64,
@@ -39,7 +36,7 @@ pub struct Color {
     pub a: f64,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Paint {
     pub r#type: String,
@@ -47,7 +44,7 @@ pub struct Paint {
     pub color: Color,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeStyle {
     font_family: String,
@@ -64,7 +61,7 @@ pub struct TypeStyle {
     line_height_percent: f64,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RectangleNode {
     pub id: String,
@@ -73,7 +70,7 @@ pub struct RectangleNode {
     pub fills: Vec<Paint>,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TextNode {
     pub id: String,
@@ -120,7 +117,7 @@ impl Client {
             let json: Value = serde_json::from_str(&text).unwrap();
 
             let mut nodes = Vec::new();
-            for (key, value) in json["nodes"].as_object().unwrap().iter() {
+            for (_, value) in json["nodes"].as_object().unwrap().iter() {
                 match value["document"]["type"].as_str() {
                     Some(str) => match str {
                     "RECTANGLE" => {
