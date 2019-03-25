@@ -10,7 +10,7 @@ use std::{env, process};
 use failure::Error;
 
 use env_logger;
-use log::info;
+use log::debug;
 
 use figma::Node;
 use design::Source;
@@ -19,7 +19,6 @@ const TEAM_ID_KEY: &str = "FIGMA_TEAM_ID";
 const ACCESS_TOKEN_KEY: &str = "FIGMA_ACCESS_TOKEN";
 
 fn main() -> Result<(), Error> {
-    env::set_var("RUST_LOG", "info");
     env_logger::init();
 
     let access_token = match env::var(ACCESS_TOKEN_KEY) {
@@ -53,7 +52,7 @@ fn main() -> Result<(), Error> {
         file_nodes.insert(file_key, file_styles);
     }
 
-    info!("{:#?}", file_nodes);
+    debug!("{:#?}", file_nodes);
 
     let mut responses = Vec::new();
     for (file_key, file_node_ids) in file_nodes.iter() {
@@ -78,7 +77,7 @@ fn main() -> Result<(), Error> {
         }
     }
 
-    info!("{:#?}", source);
+    debug!("{:#?}", source);
 
     source.generate();
 
