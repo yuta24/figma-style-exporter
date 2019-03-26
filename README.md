@@ -1,5 +1,7 @@
 # figma-style-exporter
 
+[![CircleCI](https://circleci.com/gh/yuta24/figma-style-exporter.svg?style=svg)](https://circleci.com/gh/yuta24/figma-style-exporter)
+
 **This project is under development.**
 
 ## ToDo
