@@ -16,8 +16,18 @@
 
 ## Usage
 
-Use --help to see usage information.
+### Figma Personal Access Token
+
+To use `figma-style-exporter`, you need to get a Figma personal access token. When using `figma-style-exporter`, you set `FIGMA_ACCESS_TOKEN` env var.
+
+```
+$ export FIGMA_ACCESS_TOKEN="..."
+```
+
+### Example
 
 ```
 $ figma-style-exporter --style-type text --team-id <team-id>
 ```
+
+Use --help to see usage information.
