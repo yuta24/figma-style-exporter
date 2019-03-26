@@ -1,3 +1,5 @@
+mod design;
+
 use std::result::Result;
 use std::collections::{HashSet, HashMap};
 use std::str::FromStr;
@@ -7,7 +9,7 @@ use failure::Error;
 
 use super::figma;
 use super::figma::Node;
-use super::design::Source;
+use self::design::Source;
 
 pub enum StyleType {
     TEXT,

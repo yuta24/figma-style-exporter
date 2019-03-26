@@ -3,7 +3,6 @@ extern crate tera;
 extern crate clap;
 
 mod figma;
-mod design;
 mod exporter;
 
 use std::{env, process};
@@ -11,7 +10,7 @@ use std::{env, process};
 use failure::Error;
 
 use env_logger;
-use clap::{App, Arg, SubCommand};
+use clap::{App, Arg};
 
 const ACCESS_TOKEN_KEY: &str = "FIGMA_ACCESS_TOKEN";
 
