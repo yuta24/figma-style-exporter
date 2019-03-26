@@ -40,8 +40,11 @@ fn main() -> Result<(), Error> {
             .long("team-id")
             .takes_value(true)
         )
-        .subcommand(SubCommand::with_name("generate")
-            .about("generate code")
+        .subcommand(SubCommand::with_name("color")
+            .about("generate color style")
+        )
+        .subcommand(SubCommand::with_name("text")
+            .about("generate text style")
         )
         .get_matches();
 
