@@ -3,15 +3,28 @@ use super::figma;
 use tera::Context;
 
 #[derive(Clone, Debug)]
+pub enum StyleType {
+    Text,
+    Color,
+}
+
+#[derive(Clone, Debug)]
 pub struct Source {
+    pub style_type: StyleType,
     pub rects: Vec<figma::RectangleNode>,
     pub texts: Vec<figma::TextNode>,
 }
 
 impl Source {
     pub fn generate(&self) {
-        self.generate_color();
-        self.generate_text();
+        match &self.style_type {
+            StyleType::Text => {
+                self.generate_color();
+            },
+            StyleType::Color => {
+                self.generate_text();
+            },
+        };
     }
 
     fn generate_color(&self) {

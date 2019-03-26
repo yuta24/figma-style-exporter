@@ -1,8 +1,8 @@
 mod design;
 
+use std::str::FromStr;
 use std::result::Result;
 use std::collections::{HashSet, HashMap};
-use std::str::FromStr;
 
 use log::debug;
 use failure::Error;
@@ -10,18 +10,14 @@ use failure::Error;
 use super::figma;
 use super::figma::Node;
 use self::design::Source;
-
-pub enum StyleType {
-    TEXT,
-    COLOR,
-}
+use self::design::StyleType;
 
 impl FromStr for StyleType {
     type Err = &'static str;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "text" => Ok(StyleType::TEXT),
-            "color" => Ok(StyleType::COLOR),
+            "text" => Ok(StyleType::Text),
+            "color" => Ok(StyleType::Color),
             _ => Err("Error"),
         }
     }
@@ -67,7 +63,7 @@ impl Exporter {
             .cloned()
             .collect();
 
-        let mut source = Source { rects: Vec::new(), texts: Vec::new() };
+        let mut source = Source { style_type: self.style_type.clone(), rects: Vec::new(), texts: Vec::new() };
         for node in nodes {
             match node {
                 Node::Rectangle { r } => {
