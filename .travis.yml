@@ -1,0 +1,25 @@
+language: rust
+os: osx
+rust:
+  - stable
+  - 1.33.0
+env: TARGET=x86_64-apple-darwin
+cache: cargo
+
+# script:
+#   - cargo test --all
+
+before_deploy:
+  - cargo build --target $TARGET --release
+  - mkdir "figma-style-exporter_${TRAVIS_TAG}_${TARGET}"
+  - cp target/$TARGET/release/figma-style-exporter LICENSE README.md "figma-style-exporter_${TRAVIS_TAG}_${TARGET}"
+  - zip "figma-style-exporter_${TRAVIS_TAG}_${TARGET}.zip" -r "figma-style-exporter_${TRAVIS_TAG}_${TARGET}"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: figma-style-exporter_${TRAVIS_TAG}_${TARGET}.zip
+  skip_cleanup: true
+  on:
+    repo: yuta24/figma-style-exporter
+    tags: true
