@@ -19,10 +19,10 @@ impl Source {
     pub fn generate(&self) {
         match &self.style_type {
             StyleType::Text => {
-                self.generate_color();
+                self.generate_text();
             },
             StyleType::Color => {
-                self.generate_text();
+                self.generate_color();
             },
         };
     }
