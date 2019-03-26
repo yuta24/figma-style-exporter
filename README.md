@@ -6,7 +6,7 @@
 
 - [x] Implement command line arguments and improve output
 - [ ] Use custom template
-~- [ ] Implement `generate` sub command~
+- [ ] ~Implement `generate` sub command~
 - [ ] Unit test
 - [ ] Refactoring
 - [ ] Update README
