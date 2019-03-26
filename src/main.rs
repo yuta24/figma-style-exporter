@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate tera;
+extern crate clap;
 
 mod figma;
 mod design;
@@ -10,12 +11,12 @@ use std::{env, process};
 use failure::Error;
 
 use env_logger;
-use log::debug;
+use log::{info, debug};
+use clap::{App, Arg, SubCommand};
 
 use figma::Node;
 use design::Source;
 
-const TEAM_ID_KEY: &str = "FIGMA_TEAM_ID";
 const ACCESS_TOKEN_KEY: &str = "FIGMA_ACCESS_TOKEN";
 
 fn main() -> Result<(), Error> {
@@ -29,15 +30,30 @@ fn main() -> Result<(), Error> {
         },
     };
 
-    let client = figma::Client::new(access_token);
+    let matches = App::new("exporter")
+        .version("0.0.1")
+        .author("Yu Tawata <yuta24@bivre.com>")
+        .about("Figma style exporter")
+        .arg(Arg::with_name("team-id")
+            .help("Set figma's team id")
+            .short("t")
+            .long("team-id")
+            .takes_value(true)
+        )
+        .subcommand(SubCommand::with_name("generate")
+            .about("generate code")
+        )
+        .get_matches();
 
-    let team_id = match env::var(TEAM_ID_KEY) {
-        Ok(val) => val,
-        Err(err) => {
-            println!("{}: {}", err, TEAM_ID_KEY);
+    let team_id = match matches.value_of("team-id") {
+        Some(team_id) => team_id,
+        None => {
+            println!("Set figma's team id");
             process::exit(1);
         },
     };
+
+    let client = figma::Client::new(access_token);
 
     let styles = r#try!(client.get_styles(&team_id));
 
