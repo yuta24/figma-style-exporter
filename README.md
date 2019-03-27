@@ -14,6 +14,15 @@
 - [ ] Update README
 - [ ] If rust command can call from Javascript, make Chrome Extension
 
+## Install
+
+### Homevrew
+
+```
+$ brew tap yuta24/homebrew-tap https://github.com/yuta24/homebrew-tap.git
+$ brew install figma-style-exporter
+```
+
 ## Usage
 
 ### Figma Personal Access Token
