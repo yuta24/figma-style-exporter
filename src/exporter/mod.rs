@@ -27,11 +27,12 @@ pub struct Exporter {
     access_token: String,
     team_id: String,
     style_type: StyleType,
+    template_path: String
 }
 
 impl Exporter {
-    pub fn new(access_token: String, team_id: String, style_type: String) -> Exporter {
-        return Exporter { access_token: access_token, team_id: team_id, style_type: StyleType::from_str(&style_type).unwrap() };
+    pub fn new(access_token: String, team_id: String, style_type: String, template_path: String) -> Exporter {
+        return Exporter { access_token: access_token, team_id: team_id, style_type: StyleType::from_str(&style_type).unwrap(), template_path: template_path };
     }
 
     pub fn execute(&self) -> Result<(), Error> {
@@ -77,7 +78,7 @@ impl Exporter {
 
         debug!("{:#?}", source);
 
-        source.generate();
+        source.generate(self.template_path.clone());
 
         Ok(())
     }

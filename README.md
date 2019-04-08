@@ -7,7 +7,7 @@
 ## ToDo
 
 - [x] Implement command line arguments and improve output
-- [ ] Use custom template
+- [x] Use custom template
 - [ ] ~Implement `generate` sub command~
 - [ ] Unit test
 - [ ] Refactoring
@@ -36,7 +36,7 @@ $ export FIGMA_ACCESS_TOKEN="..."
 ### Example
 
 ```
-$ figma-style-exporter --style-type text --team-id <team-id>
+$ figma-style-exporter --style-type=text --team-id=<team-id> --template-path=<template-path>
 ```
 
 Use --help to see usage information.

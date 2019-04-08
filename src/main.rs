@@ -33,6 +33,12 @@ fn main() -> Result<(), Error> {
             .required(true)
             .takes_value(true)
         )
+        .arg(Arg::with_name("template")
+            .help("template path")
+            .long("template-path")
+            .required(true)
+            .takes_value(true)
+        )
         .get_matches();
 
     let team_id = match matches.value_of("team-id") {
@@ -49,6 +55,13 @@ fn main() -> Result<(), Error> {
             process::exit(1);
         },
     };
+    let template_path = match matches.value_of("template") {
+        Some(template_path) => template_path,
+        None => {
+            println!("Set template path");
+            process::exit(1);
+        },
+    };
 
     let access_token = match env::var(ACCESS_TOKEN_KEY) {
         Ok(val) => val,
@@ -58,6 +71,6 @@ fn main() -> Result<(), Error> {
         },
     };
 
-    let exporter = exporter::Exporter::new(access_token, team_id.to_string(), style_type.to_string());
+    let exporter = exporter::Exporter::new(access_token, team_id.to_string(), style_type.to_string(), template_path.to_string());
     exporter.execute()
 }
