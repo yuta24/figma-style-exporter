@@ -1,9 +1,11 @@
 use super::figma;
 
 use std::path::Path;
+use std::collections::HashMap;
 
-use log::{info, debug};
-use tera::Context;
+use tera::{Context, Result, Value, to_value};
+
+use inflector::Inflector;
 
 #[derive(Clone, Debug)]
 pub enum StyleType {
@@ -18,7 +20,18 @@ pub struct Source {
     pub texts: Vec<figma::TextNode>,
 }
 
+fn camelcase(value: Value, _: HashMap<String, Value>) -> Result<Value> {
+    let s = try_get_value!("camelcase", "value", String, value);
+    Ok(to_value(s.to_camel_case()).unwrap())
+}
+
 impl Source {
+    fn tera() -> tera::Tera {
+        let mut tera = tera::Tera::default();
+        tera.register_filter("camelcase", camelcase);
+        return tera;
+    }
+
     pub fn generate(&self, template_path: String) {
         match &self.style_type {
             StyleType::Text => {
@@ -32,7 +45,7 @@ impl Source {
 
     fn generate_color(&self, template_path: String) {
         let path = Path::new(&template_path);
-        let mut tera = tera::Tera::default();
+        let mut tera = Source::tera();
         tera.add_template_file(path, Some("color.swift")).unwrap();
 
         let mut ctx = Context::new();
@@ -46,7 +59,7 @@ impl Source {
 
     fn generate_text(&self, template_path: String) {
         let path = Path::new(&template_path);
-        let mut tera = tera::Tera::default();
+        let mut tera = Source::tera();
         tera.add_template_file(path, Some("text.swift")).unwrap();
 
         let mut ctx = Context::new();

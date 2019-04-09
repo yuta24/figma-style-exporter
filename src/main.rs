@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate tera;
 extern crate clap;
+extern crate inflector;
 
 mod figma;
 mod exporter;
