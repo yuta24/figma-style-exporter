@@ -19,7 +19,7 @@ fn main() -> Result<(), Error> {
     env_logger::init();
 
     let matches = App::new("exporter")
-        .version("0.0.1")
+        .version("0.0.5")
         .author("Yu Tawata <yuta24@bivre.com>")
         .about("Figma style exporter")
         .arg(Arg::with_name("team-id")
