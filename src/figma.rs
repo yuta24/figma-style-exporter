@@ -97,8 +97,9 @@ impl Client {
     pub fn get_styles(&self, team_id: &str) -> Result<Vec<Style>, reqwest::Error> {
         let client = reqwest::Client::new();
         let url = format!("{}/v1/teams/{}/styles", BASE_URL, team_id);
+        let query = [("page_size", 200)];
 
-        return client.get(&url).header("X-FIGMA-TOKEN", self.access_token.clone()).send().map( |mut res| {
+        return client.get(&url).query(&query).header("X-FIGMA-TOKEN", self.access_token.clone()).send().map( |mut res| {
             let text = res.text().unwrap();
             let json: Value = serde_json::from_str(&text).unwrap();
             let styles = json["meta"]["styles"].clone();
