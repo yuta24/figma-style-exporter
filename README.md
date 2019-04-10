@@ -1,6 +1,7 @@
 # figma-style-exporter
 
 [![CircleCI](https://circleci.com/gh/yuta24/figma-style-exporter.svg?style=svg)](https://circleci.com/gh/yuta24/figma-style-exporter)
+[![TravisCI](https://travis-ci.org/yuta24/figma-style-exporter.svg?branch=master)](https://travis-ci.org/yuta24/figma-style-exporter)
 
 **This project is under development.**
 
